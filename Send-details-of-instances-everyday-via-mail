@@ -1,0 +1,59 @@
+# This script will fetch all the details of instances in an account and will send it via email to recipient
+# Developed By Bhargav Amin 
+# Visit bhargavamin.com for more info
+
+import boto3
+# Import smtplib for the actual sending function
+import smtplib
+
+# Import the email modules we'll need
+#from email.mime.text import MIMEText
+
+def lambda_handler(event, context):
+	ec2 = boto3.resource('ec2')
+	count = 0
+
+
+	message=[] 
+	instances = ec2.instances.filter(
+    	Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+	#print "instances running are : "
+	for instance in instances:
+		#    print(instance.id, instance.instance_type,instance.state,instance.image,instance.public_ip_address,instance.volumes)
+    		 count+=1
+     		 message.append({'instance_id':instance.id,'instance_type':instance.instance_type})
+	print count
+	print message 
+
+
+	def prompt(prompt):
+    		return raw_input(prompt).strip()
+
+	sender = '<email id>'
+	receivers = ['<email id>']
+	msg = """From: From Person <email id>
+	To: To Person <email id> 
+	Subject: instances details
+	
+	This is a test e-mail message.
+	It contains details of all instances running
+	""" + str(message) + """Total no of running instances are  """ + str(count)
+
+	print msg 
+	smtp_server = 'email-smtp.us-east-1.amazonaws.com'
+	smtp_username = '<smtp credentials>'
+	smtp_password = '<smtp credentials>'
+	smtp_port = '587'
+	smtp_do_tls = True
+
+	server = smtplib.SMTP(
+   	 host = smtp_server,
+   	 port = smtp_port,
+    	timeout = 10
+	)
+	server.set_debuglevel(10)
+	server.starttls()
+	server.ehlo()
+	server.login(smtp_username, smtp_password)
+	server.sendmail(sender, receivers, msg)
+	print server.quit()
