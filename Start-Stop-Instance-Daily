@@ -1,0 +1,35 @@
+# This script will start and stop instances daily via lambda
+# Developed By Bhargav Amin 
+# Visit bhargavamin.com for more info
+
+# I would suggest to create two seperate functions to start and stop separatly 
+
+#----Start Instances------------------------------------
+import boto3
+# Enter the region your instances are in, e.g. 'xx-xxxx-x'
+region = '<region name>'
+# Enter your instances here: ex. ['X-XXXXXXXX', 'X-XXXXXXXX']
+instances = ['X-XXXXXXXX','X-XXXXXXXX','X-XXXXXXXX']
+def lambda_handler(event, context):
+ ec2 = boto3.client('ec2', region_name=region)
+ ec2.start_instances(InstanceIds=instances)
+ print 'started your instances: ' + str(instances)
+ 
+ #-------------------------------------------------------
+ 
+ 
+ 
+ #----Stop Instances-------------------------------------
+ import boto3
+# Enter the region your instances are in, e.g. 'xx-xxxx-x'
+region = '<region name>'
+# Enter your instances here: ex. ['X-XXXXXXXX', 'X-XXXXXXXX']
+instances = ['X-XXXXXXXX','X-XXXXXXXX','X-XXXXXXXX']
+def lambda_handler(event, context):
+ ec2 = boto3.client('ec2', region_name=region)
+ ec2.stop_instances(InstanceIds=instances)
+ print 'stopped your instances: ' + str(instances)
+ 
+ #-------------------------------------------------------
+ 
+ 
